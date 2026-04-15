@@ -46,15 +46,16 @@ body {
     cursor: pointer;
 }
 
-/* TEXTO TOPO */
+/* TEXTO TOPO FIXO */
 #textoTopo {
     position: fixed;
-    top: 25px;
-    left: 20%;
-    transform: translateX(-50%);
+    top: 20px;
+    left: 20px;
     font-size: 1rem;
     letter-spacing: 1px;
     z-index: 999;
+    text-align: left;
+    line-height: 1.4;
 }
 
 /* LETRAS FUNDO */
@@ -83,7 +84,7 @@ body {
     left: 30%;
     transform: translate(-50%, -50%);
     font-size: 18vw;
-    opacity: 1.3;
+    opacity: 0.3;
 }
 
 /* CONTEÚDO */
@@ -152,8 +153,6 @@ body {
         font-size: 1rem;
     }
 
-    @media (max-width: 768px) {
-
     .k {
         top: -30px;
         left: 55%;
@@ -173,7 +172,6 @@ body {
         font-size: 22vw;
     }
 }
-}
 </style>
 </head>
 
@@ -185,30 +183,28 @@ body {
     <button onclick="abrirConvite()">Abrir convite</button>
 </div>
 
-<!-- TEXTO TOPO -->
+<!-- TEXTO TOPO FIXO -->
 <div id="textoTopo">
     Com muita alegria<br>
     convidamos você para<br>
-    celebrar nosso<br>
-    casamento
+    celebrar nosso casamento
 </div>
 
-<!-- LETRAS -->
+<!-- LETRAS FUNDO -->
 <div class="bg-letter k">K</div>
 <div class="bg-letter t">T</div>
 <div class="bg-letter e">&</div>
 
 <!-- CONTEÚDO -->
 <div class="main" id="main">
+
     <div class="section">
 
         <div class="names">
             KAMILLY &<br>
             TIAGO
         </div>
-</div>
 
-        </div>
         <div class="info">
             Dia 20 de novembro de 2027<br>
             às 18h30min<br>
@@ -225,7 +221,8 @@ body {
 </div>
 
 <script>
-// ABRIR
+
+// ABRIR CONVITE
 function abrirConvite(){
     document.getElementById("opening").style.opacity = "0";
 
@@ -254,6 +251,7 @@ const numero = "5522988214942";
 
 document.getElementById("confirmar").href =
 `https://wa.me/${numero}?text=Confirmo%20minha%20presença%20no%20casamento`;
+
 </script>
 
 </body>
