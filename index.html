@@ -8,6 +8,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Cormorant+Garamond:wght@300&display=swap" rel="stylesheet">
 
 <style>
+
 * {
     margin: 0;
     padding: 0;
@@ -46,52 +47,13 @@ body {
     cursor: pointer;
 }
 
-/* TEXTO TOPO FIXO */
-#textoTopo {
-    position: fixed;
-    top: 20px;
-    left: 20px;
-    font-size: 1rem;
-    letter-spacing: 1px;
-    z-index: 1;
-    line-height: 1.4;
-}
-
-/* LETRAS FUNDO */
-.bg-letter {
-    position: fixed;
-    font-family: 'Playfair Display', serif;
-    color: #e9e1d9;
-    z-index: 0;
-    pointer-events: none;
-}
-}
-
-.k {
-    top: -200px;
-    left: 800px;
-    font-size: 25vw;
-}
-
-.t {
-    bottom: -160px;
-    right: 275px;
-    font-size: 25vw;
-}
-
-.e {
-    top: 50%;
-    left: 30%;
-    transform: translate(-50%, -50%);
-    font-size: 18vw;
-    opacity: 0.3;
-}
-
 /* CONTEÚDO */
 .main {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: 1.5s;
     position: relative;
     z-index: 5;
-}
 }
 
 .main.show {
@@ -106,6 +68,46 @@ body {
     flex-direction: column;
     justify-content: center;
     padding: 60px 20px;
+}
+
+/* TEXTO TOPO (AGORA ROLA COM A PÁGINA) */
+#textoTopo {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 1rem;
+    letter-spacing: 1px;
+    line-height: 1.4;
+    z-index: 1;
+}
+
+/* LETRAS FUNDO (AGORA ROLAM COM A PÁGINA) */
+.bg-letter {
+    position: absolute;
+    font-family: 'Playfair Display', serif;
+    color: #e9e1d9;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.k {
+    top: -110px;
+    left: 800px;
+    font-size: 24vw;
+}
+
+.t {
+    bottom: -50px;
+    right: 275px;
+    font-size: 24vw;
+}
+
+.e {
+    top: 50%;
+    left: 30%;
+    transform: translate(-50%, -50%);
+    font-size: 18vw;
+    opacity: 0.3;
 }
 
 /* NOMES */
@@ -152,24 +154,25 @@ body {
     }
 
     .k {
-        top: -20px;
+        top: -30px;
         left: 55%;
-        font-size: 40vw;
+        font-size: 30vw;
     }
 
     .t {
-        bottom: -90px;
+        bottom: -60px;
         right: 10%;
-        font-size: 40vw;
+        font-size: 30vw;
     }
 
     .e {
         top: 52%;
-        left: 20%;
+        left: 35%;
         transform: translate(-50%, -50%);
-        font-size: 30vw;
+        font-size: 22vw;
     }
 }
+
 </style>
 </head>
 
@@ -181,14 +184,13 @@ body {
     <button onclick="abrirConvite()">Abrir convite</button>
 </div>
 
-<!-- TEXTO TOPO FIXO -->
+<!-- FUNDO (AGORA FAZ PARTE DO SCROLL) -->
 <div id="textoTopo">
     Com muita alegria<br>
     convidamos você para<br>
     celebrar nosso casamento
 </div>
 
-<!-- LETRAS FUNDO -->
 <div class="bg-letter k">K</div>
 <div class="bg-letter t">T</div>
 <div class="bg-letter e">&</div>
@@ -202,11 +204,8 @@ body {
             KAMILLY &<br>
             TIAGO
         </div>
-  </div>
+
         <div class="info">
-            </div>
-      </div> 
-      </div>
             Dia 20 de novembro de 2027<br>
             às 18h30min<br>
             Primeira Igreja Batista de Itaperuna
@@ -219,6 +218,7 @@ body {
         </div>
 
     </div>
+
 </div>
 
 <script>
