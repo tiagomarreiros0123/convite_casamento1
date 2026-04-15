@@ -49,12 +49,15 @@ body {
 /* TEXTO TOPO */
 #textoTopo {
     position: fixed;
-    top: 25px;
-    left: 20%;
-    transform: translateX(-50%);
+    top: 25%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     font-size: 1rem;
     letter-spacing: 1px;
-    z-index: 999;
+    z-index: 0; /* fica no fundo */
+    opacity: 0.25; /* efeito mais suave */
+    text-align: center;
+    pointer-events: none;
 }
 
 /* LETRAS FUNDO */
@@ -64,6 +67,9 @@ body {
     color: #e9e1d9;
     z-index: 0;
     pointer-events: none;
+}
+    .bg-letter {
+    z-index: 0;
 }
 
 .k {
@@ -87,10 +93,7 @@ body {
 }
 
 /* CONTEÚDO */
-.main {
-    opacity: 0;
-    transform: translateY(40px);
-    transition: 1.5s;
+ .main {
     position: relative;
     z-index: 2;
 }
@@ -161,7 +164,7 @@ body {
     }
 
     .t {
-        bottom: 30px;
+        bottom: 150px;
         right: 10%;
         font-size: 30vw;
     }
