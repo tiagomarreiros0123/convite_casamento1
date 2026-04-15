@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kamilly & Tiago</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Cormorant+Garamond:wght@300&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Cormorant Garamond', serif;
+    background: #f4efe9;
+    color: #6b1c2a;
+    overflow: hidden;
+}
+
+/* TELA INICIAL */
+.opening {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: #6b1c2a;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    text-align: center;
+    transition: opacity 1s ease;
+}
+
+.opening h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.5rem;
+}
+
+.opening button {
+    margin-top: 30px;
+    padding: 12px 30px;
+    border-radius: 30px;
+    border: none;
+    background: white;
+    color: #6b1c2a;
+    font-size: 1rem;
+    cursor: pointer;
+}
+
+/* MENSAGEM */
+.message {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: #f4efe9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    font-size: 1.6rem;
+    opacity: 0;
+    transition: opacity 1s;
+    z-index: 999;
+}
+
+/* LETRAS FUNDO */
+.bg-letter {
+    position: fixed;
+    font-family: 'Playfair Display', serif;
+    font-size: 28vw;
+    color: #e9e1d9;
+    z-index: 0;
+}
+
+.k { top: -100px; right: 800px; }
+.t { bottom: -80px; right: 260px; }
+
+.e {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 20vw;
+    opacity: 0.4;
+}
+
+/* CONTEÚDO */
+.main {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: 1.5s ease;
+    position: relative;
+    z-index: 2;
+    height: 100vh;
+    padding: 80px 60px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.main.show {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* TEXTOS */
+.convidado {
+    text-align: center;
+    font-size: 1.3rem;
+}
+
+.names {
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 3.8rem;
+}
+
+.bottom-text {
+    font-size: 1.3rem;
+}
+
+/* BOTÃO */
+.btn {
+    margin-top: 20px;
+    display: inline-block;
+    padding: 10px 25px;
+    border: 1px solid #6b1c2a;
+    border-radius: 30px;
+    text-decoration: none;
+    color: #6b1c2a;
+}
+
+.btn:hover {
+    background: #6b1c2a;
+    color: white;
+}
+
+/* CONTADOR */
+#countdown {
+    margin-top: 15px;
+    font-size: 1rem;
+    opacity: 0.8;
+}
+</style>
+</head>
+
+<body>
+
+<!-- TELA INICIAL -->
+<div class="opening" id="opening">
+    <h1>Você foi convidado</h1>
+    <button onclick="abrirConvite()">Abrir convite</button>
+</div>
+
+<!-- MENSAGEM -->
+<div class="message" id="message">
+    <p id="textoMensagem"></p>
+</div>
+
+<!-- LETRAS -->
+<div class="bg-letter k">K</div>
+<div class="bg-letter t">T</div>
+<div class="bg-letter e">&</div>
+
+<!-- CONTEÚDO -->
+<div class="main" id="main">
+
+    <div class="convidado" id="nomeConvidado"></div>
+
+    <div class="names">
+        KAMILLY<br>
+        TIAGO
+    </div>
+
+    <div class="bottom-text">
+        Dia 20 de novembro de 2027, às 18h30min,<br>
+        na Primeira Igreja Batista de Itaperuna
+
+        <div id="countdown"></div>
+
+        <a class="btn" id="confirmar" target="_blank">
+        Confirmar presença
+        </a>
+    </div>
+
+</div>
+
+<script>
+// PEGAR NOME
+const params = new URLSearchParams(window.location.search);
+const nome = params.get("nome");
+
+// ABRIR CONVITE
+function abrirConvite(){
+
+    document.getElementById("opening").style.opacity = "0";
+
+    setTimeout(() => {
+        document.getElementById("opening").style.display = "none";
+
+        let texto = "Você foi convidado para o nosso casamento 💍";
+
+        if(nome){
+            texto = `${nome}, você foi convidado para o nosso casamento 💍`;
+            document.getElementById("nomeConvidado").innerHTML = `${nome}, você está convidado`;
+        }
+
+        document.getElementById("textoMensagem").innerHTML = texto;
+
+        const msg = document.getElementById("message");
+        msg.style.opacity = "1";
+
+        setTimeout(() => {
+            msg.style.opacity = "0";
+
+            setTimeout(() => {
+                msg.style.display = "none";
+                document.getElementById("main").classList.add("show");
+            }, 1000);
+
+        }, 3000);
+
+    }, 1000);
+}
+
+// CONTADOR
+const data = new Date(2027, 10, 20, 18, 30).getTime();
+
+setInterval(() => {
+    const now = new Date().getTime();
+    const diff = data - now;
+
+    const dias = Math.floor(diff / (1000 * 60 * 60 * 24));
+    const horas = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+
+    document.getElementById("countdown").innerHTML =
+        `Faltam ${dias} dias e ${horas} horas`;
+}, 1000);
+
+// WHATSAPP AUTOMÁTICO
+let mensagem = "Confirmo minha presença no casamento 💍";
+
+if(nome){
+    mensagem = `Olá! Sou ${nome} e confirmo minha presença no casamento 💍`;
+}
+
+const numero = "5522988214942";
+const link = `https://wa.me/${numero}?text=${encodeURIComponent(mensagem)}`;
+
+document.getElementById("confirmar").href = link;
+</script>
+
+</body>
+</html>
