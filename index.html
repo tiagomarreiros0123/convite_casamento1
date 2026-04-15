@@ -21,223 +21,144 @@ body {
     overflow-x: hidden;
 }
 
-/* TELA INICIAL */
-.opening {
+/* FUNDO FIXO (MARCA D'ÁGUA) */
+.bg-text {
     position: fixed;
-    width: 100%;
-    height: 100%;
-    background: #6b1c2a;
-    color: white;
+    inset: 0;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
-    z-index: 1000;
-    transition: 1s;
-}
-
-.opening button {
-    margin-top: 20px;
-    padding: 12px 30px;
-    border-radius: 30px;
-    border: none;
-    background: white;
-    color: #6b1c2a;
-    cursor: pointer;
-}
-
-/* TEXTO TOPO */
-#textoTopo {
-    position: fixed;
-    top: 10%;
-    left: 30%;
-    transform: translate(-50%, -50%);
-    font-size: 1rem;
-    letter-spacing: 1px;
-    z-index: 0; /* fica no fundo */
-    opacity: 2.25; /* efeito mais suave */
+    z-index: 0;
+    pointer-events: none;
     text-align: center;
-    pointer-events: none;
 }
 
-/* LETRAS FUNDO */
-.bg-letter {
-    position: fixed;
+/* mensagem convite fundo */
+.bg-message {
+    font-size: 1.1rem;
+    opacity: 0.18;
+    letter-spacing: 1px;
+    margin-bottom: 40px;
+}
+
+/* nomes fundo */
+.bg-names {
     font-family: 'Playfair Display', serif;
-    color: #e9e1d9;
-    z-index: 0;
-    pointer-events: none;
-}
-    .bg-letter {
-    z-index: 0;
-}
-
-.k {
-    top: -110px;
-    left: 800px;
-    font-size: 24vw;
-}
-
-.t {
-    bottom: -30px;
-    right: 275px;
-    font-size: 24vw;
-}
-
-.e {
-    top: 50%;
-    left: 30%;
-    transform: translate(-50%, -50%);
-    font-size: 18vw;
-    opacity: 1.3;
+    font-size: 8vw;
+    opacity: 0.12;
 }
 
 /* CONTEÚDO */
- .main {
+.container {
     position: relative;
     z-index: 2;
-}
-
-.main.show {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-/* SEÇÃO */
-.section {
     min-height: 100vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
+    align-items: center;
+    gap: 30px;
     padding: 60px 20px;
 }
 
-/* NOMES */
-.names {
+/* CARDS */
+.card {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(107, 28, 42, 0.15);
+    border-radius: 20px;
+    padding: 30px 25px;
+    width: 100%;
+    max-width: 420px;
     text-align: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+/* CARD NOME */
+.card h1 {
     font-family: 'Playfair Display', serif;
-    font-size: 3.5rem;
+    font-size: 2.2rem;
 }
 
 /* INFO */
 .info {
-    text-align: center;
-    font-size: 1.2rem;
-    margin-top: 20px;
+    font-size: 1.1rem;
     line-height: 1.6;
 }
 
 /* BOTÃO */
 .btn {
-    margin-top: 25px;
-    padding: 12px 30px;
-    border: 1px solid #6b1c2a;
+    margin-top: 20px;
+    padding: 12px 25px;
     border-radius: 30px;
-    text-decoration: none;
+    border: 1px solid #6b1c2a;
     color: #6b1c2a;
+    text-decoration: none;
     display: inline-block;
+    transition: 0.3s;
+}
+
+.btn:hover {
+    background: #6b1c2a;
+    color: white;
 }
 
 /* CONTADOR */
 #countdown {
     margin-top: 10px;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
 }
 
 /* RESPONSIVO */
-@media (max-width: 768px) {
-
-    .names {
-        font-size: 2.4rem;
+@media (max-width: 600px) {
+    .bg-names {
+        font-size: 14vw;
     }
-
-    .info {
-        font-size: 1rem;
-    }
-
-    @media (max-width: 768px) {
-
-    .k {
-        top: 150px;
-        left: 55%;
-        font-size: 50vw;
-    }
-
-    .t {
-        bottom: 170px;
-        right: 30%;
-        font-size: 50vw;
-    }
-
-    .e {
-        top: 52%;
-        left: 20%;
-        transform: translate(-50%, -50%);
-        font-size: 22vw;
-    }
-}
 }
 </style>
 </head>
 
 <body>
 
-<!-- ABERTURA -->
-<div class="opening" id="opening">
-    <h1>Você foi convidado</h1>
-    <button onclick="abrirConvite()">Abrir convite</button>
-</div>
+<!-- FUNDO FIXO -->
+<div class="bg-text">
+    <div class="bg-message">
+        Com muita alegria<br>
+        convidamos você para celebrar nosso casamento
+    </div>
 
-<!-- TEXTO TOPO -->
-<div id="textoTopo">
-    Com muita alegria<br>
-    convidamos você para<br>
-    celebrar nosso<br>
-    casamento
+    <div class="bg-names">
+        KAMILLY<br>&<br>TIAGO
+    </div>
 </div>
-
-<!-- LETRAS -->
-<div class="bg-letter k">K</div>
-<div class="bg-letter t">T</div>
-<div class="bg-letter e">&</div>
 
 <!-- CONTEÚDO -->
-<div class="main" id="main">
-    <div class="section">
+<div class="container">
 
-        <div class="names">
-            KAMILLY &<br>
-            TIAGO
-        </div>
-</div>
+    <!-- CARD 1 -->
+    <div class="card">
+        <h1>KAMILLY & TIAGO</h1>
+    </div>
 
-        </div>
+    <!-- CARD 2 -->
+    <div class="card">
         <div class="info">
             Dia 20 de novembro de 2027<br>
             às 18h30min<br>
             Primeira Igreja Batista de Itaperuna
-
-            <div id="countdown"></div>
-
-            <a class="btn" id="confirmar" target="_blank">
-                Confirmar presença
-            </a>
         </div>
 
+        <div id="countdown"></div>
+
+        <a class="btn" id="confirmar" target="_blank">
+            Confirmar presença
+        </a>
     </div>
+
 </div>
 
 <script>
-// ABRIR
-function abrirConvite(){
-    document.getElementById("opening").style.opacity = "0";
-
-    setTimeout(() => {
-        document.getElementById("opening").style.display = "none";
-        document.getElementById("main").classList.add("show");
-    }, 1000);
-}
-
 // CONTADOR
 const data = new Date(2027, 10, 20, 18, 30).getTime();
 
