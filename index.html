@@ -21,80 +21,106 @@ body {
     overflow-x: hidden;
 }
 
-/* FUNDO FIXO (MARCA D'ÁGUA) */
-.bg-text {
+/* FUNDO FIXO */
+.bg {
     position: fixed;
     inset: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
     z-index: 0;
     pointer-events: none;
-    text-align: center;
 }
 
-/* mensagem convite fundo */
+/* mensagem fundo */
 .bg-message {
+    position: absolute;
+    top: 18%;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
     font-size: 1.1rem;
     opacity: 0.18;
-    letter-spacing: 1px;
-    margin-bottom: 40px;
+    line-height: 1.5;
 }
 
-/* nomes fundo */
-.bg-names {
+/* LETRAS K E T SEPARADAS */
+.bg-letter {
+    position: absolute;
     font-family: 'Playfair Display', serif;
-    font-size: 8vw;
-    opacity: 0.12;
+    font-size: 30vw;
+    color: #e9e1d9;
+    opacity: 0.25;
 }
 
-/* CONTEÚDO */
+.k {
+    top: 5%;
+    left: 10%;
+}
+
+.t {
+    bottom: 5%;
+    right: 10%;
+}
+
+/* CONTAINER */
 .container {
     position: relative;
     z-index: 2;
     min-height: 100vh;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 30px;
-    padding: 60px 20px;
+    padding: 40px 20px;
 }
 
-/* CARDS */
+/* CARD GRANDE (EFEITO PÁGINA) */
 .card {
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(6px);
-    border: 1px solid rgba(107, 28, 42, 0.15);
-    border-radius: 20px;
-    padding: 30px 25px;
     width: 100%;
-    max-width: 420px;
-    text-align: center;
-    box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+    max-width: 700px;
+    min-height: 80vh;
+
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(10px);
+
+    border-radius: 25px;
+    padding: 50px 30px;
+
+    box-shadow:
+        0 20px 60px rgba(0,0,0,0.15),
+        inset 0 0 0 1px rgba(107, 28, 42, 0.1);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 40px;
 }
 
-/* CARD NOME */
-.card h1 {
+/* NOME */
+.title {
     font-family: 'Playfair Display', serif;
-    font-size: 2.2rem;
+    font-size: 3rem;
+    text-align: center;
 }
 
 /* INFO */
 .info {
-    font-size: 1.1rem;
-    line-height: 1.6;
+    text-align: center;
+    font-size: 1.2rem;
+    line-height: 1.7;
+}
+
+/* CONTADOR */
+#countdown {
+    margin-top: 10px;
+    font-size: 1rem;
 }
 
 /* BOTÃO */
 .btn {
-    margin-top: 20px;
-    padding: 12px 25px;
-    border-radius: 30px;
+    margin-top: 25px;
+    padding: 14px 30px;
+    border-radius: 40px;
     border: 1px solid #6b1c2a;
-    color: #6b1c2a;
     text-decoration: none;
+    color: #6b1c2a;
     display: inline-block;
     transition: 0.3s;
 }
@@ -104,16 +130,19 @@ body {
     color: white;
 }
 
-/* CONTADOR */
-#countdown {
-    margin-top: 10px;
-    font-size: 0.95rem;
-}
-
 /* RESPONSIVO */
-@media (max-width: 600px) {
-    .bg-names {
-        font-size: 14vw;
+@media (max-width: 768px) {
+    .title {
+        font-size: 2.2rem;
+    }
+
+    .card {
+        min-height: auto;
+        padding: 35px 20px;
+    }
+
+    .bg-letter {
+        font-size: 40vw;
     }
 }
 </style>
@@ -121,39 +150,40 @@ body {
 
 <body>
 
-<!-- FUNDO FIXO -->
-<div class="bg-text">
+<!-- FUNDO -->
+<div class="bg">
+
     <div class="bg-message">
         Com muita alegria<br>
         convidamos você para celebrar nosso casamento
     </div>
 
-    <div class="bg-names">
-        KAMILLY<br>&<br>TIAGO
-    </div>
+    <div class="bg-letter k">K</div>
+    <div class="bg-letter t">T</div>
+
 </div>
 
 <!-- CONTEÚDO -->
 <div class="container">
 
-    <!-- CARD 1 -->
     <div class="card">
-        <h1>KAMILLY & TIAGO</h1>
-    </div>
 
-    <!-- CARD 2 -->
-    <div class="card">
+        <div class="title">
+            KAMILLY & TIAGO
+        </div>
+
         <div class="info">
             Dia 20 de novembro de 2027<br>
             às 18h30min<br>
             Primeira Igreja Batista de Itaperuna
+
+            <div id="countdown"></div>
+
+            <a class="btn" id="confirmar" target="_blank">
+                Confirmar presença
+            </a>
         </div>
 
-        <div id="countdown"></div>
-
-        <a class="btn" id="confirmar" target="_blank">
-            Confirmar presença
-        </a>
     </div>
 
 </div>
