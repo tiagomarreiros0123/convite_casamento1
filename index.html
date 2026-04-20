@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>Lista de Presentes — Kamilly & Tiago</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Italianno&family=Tangerine:wght@400;700&display=swap" rel="stylesheet">
 
 <!-- Firebase SDK -->
 <script type="module">
@@ -34,16 +34,17 @@
 
 <style>
   :root {
-    --bordo1: #6b0f1a;
-    --bordo2: #9b2335;
-    --bordo3: #c4384e;
-    --bordo4: #7d1128;
+    --bordo1: #4b0a0a;
+    --bordo2: #4b0a0a;
+    --bordo3: #4b0a0a;
+    --bordo4: #4b0a0a;
     --gold: #d4a843;
     --gold-light: #e8c876;
     --cream: #fdf6ee;
     --dark: #1a0509;
     --text: #2d0a10;
     --white: #ffffff;
+    --black: #4b0a0a;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -59,7 +60,7 @@
   /* ---- HERO ---- */
   .hero {
     min-height: 100vh;
-    background: linear-gradient(135deg, var(--dark) 0%, var(--bordo1) 35%, var(--bordo2) 65%, var(--bordo3) 100%);
+    background: linear-gradient(135deg, var(--black) 100%, var(--black) 100%, var(--black) 100%, var(--black) 100%);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -74,20 +75,20 @@
     content: '';
     position: absolute;
     inset: 0;
-    background: radial-gradient(ellipse at 30% 20%, rgba(212,168,67,0.15) 0%, transparent 60%),
-                radial-gradient(ellipse at 70% 80%, rgba(107,15,26,0.4) 0%, transparent 60%);
+    background: radial-gradient(ellipse at 30% 20%, #9c353526 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 80%, #61040f66 0%, transparent 60%);
   }
 
   .hero-ornament {
     position: absolute;
-    width: 600px; height: 600px;
-    border: 1px solid rgba(212,168,67,0.15);
+    
+    
     border-radius: 50%;
     top: 50%; left: 50%;
     transform: translate(-50%, -50%);
     pointer-events: none;
   }
-  .hero-ornament:nth-child(2) { width: 800px; height: 800px; border-color: rgba(212,168,67,0.08); }
+  .hero-ornament:nth-child(2) { width: 800px; height: 800px; border-color: rgba(49, 35, 1, 0.08); }
   .hero-ornament:nth-child(3) { width: 400px; height: 400px; border-color: rgba(212,168,67,0.2); }
 
   .hero-tag {
@@ -103,11 +104,11 @@
   }
 
   .hero h1 {
-    font-family: 'Cormorant Garamond', serif;
+    font-family: "Italianno", cursive;
     font-size: clamp(3rem, 9vw, 7rem);
-    font-weight: 300;
-    color: var(--white);
-    line-height: 0.95;
+    font-weight:400;
+    color: var(--gold-light);
+    line-height: .95;
     position: relative;
     z-index: 1;
     letter-spacing: -0.01em;
@@ -115,7 +116,7 @@
 
   .hero h1 .amp {
     font-style: italic;
-    color: var(--gold);
+    color: var(--gold-light);
     font-size: 0.8em;
     display: block;
     margin: 8px 0;
@@ -126,7 +127,7 @@
     font-family: 'Cormorant Garamond', serif;
     font-style: italic;
     font-size: 1.2rem;
-    color: rgba(255,255,255,0.7);
+    color: var(--gold-light);
     position: relative;
     z-index: 1;
   }
@@ -143,7 +144,7 @@
   .countdown-section {
     padding: 80px 20px;
     text-align: center;
-    background: linear-gradient(180deg, var(--bordo1) 0%, var(--bordo4) 100%);
+    background: linear-gradient(100deg, var(--black) 100%, var(--black) 100%);
     position: relative;
   }
 
@@ -743,7 +744,8 @@
 
   /* ---- FOOTER ---- */
   footer {
-    background: var(--dark);
+    background: var(--bordo1);
+    background: var(--black);
     padding: 60px 20px;
     text-align: center;
   }
