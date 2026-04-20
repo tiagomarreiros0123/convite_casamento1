@@ -1,0 +1,1440 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Lista de Presentes — Kamilly & Tiago</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+
+<!-- Firebase SDK -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getFirestore, collection, addDoc, getDocs, doc, updateDoc, deleteDoc, onSnapshot, query, orderBy } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
+
+  // =============================================
+  // 🔥 CONFIGURAÇÃO FIREBASE — SUBSTITUA ABAIXO
+  // =============================================
+  const firebaseConfig = {
+    apiKey: "SUA_API_KEY",
+    authDomain: "SEU_PROJECT.firebaseapp.com",
+    projectId: "SEU_PROJECT_ID",
+    storageBucket: "SEU_PROJECT.appspot.com",
+    messagingSenderId: "SEU_SENDER_ID",
+    appId: "SEU_APP_ID"
+  };
+  // =============================================
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+  window._db = db;
+  window._fbFuncs = { collection, addDoc, getDocs, doc, updateDoc, deleteDoc, onSnapshot, query, orderBy };
+  window._dbReady = true;
+  window.dispatchEvent(new Event('firebase-ready'));
+</script>
+
+<style>
+  :root {
+    --bordo1: #6b0f1a;
+    --bordo2: #9b2335;
+    --bordo3: #c4384e;
+    --bordo4: #7d1128;
+    --gold: #d4a843;
+    --gold-light: #e8c876;
+    --cream: #fdf6ee;
+    --dark: #1a0509;
+    --text: #2d0a10;
+    --white: #ffffff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Jost', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ---- HERO ---- */
+  .hero {
+    min-height: 100vh;
+    background: linear-gradient(135deg, var(--dark) 0%, var(--bordo1) 35%, var(--bordo2) 65%, var(--bordo3) 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    padding: 40px 20px;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 30% 20%, rgba(212,168,67,0.15) 0%, transparent 60%),
+                radial-gradient(ellipse at 70% 80%, rgba(107,15,26,0.4) 0%, transparent 60%);
+  }
+
+  .hero-ornament {
+    position: absolute;
+    width: 600px; height: 600px;
+    border: 1px solid rgba(212,168,67,0.15);
+    border-radius: 50%;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+  }
+  .hero-ornament:nth-child(2) { width: 800px; height: 800px; border-color: rgba(212,168,67,0.08); }
+  .hero-ornament:nth-child(3) { width: 400px; height: 400px; border-color: rgba(212,168,67,0.2); }
+
+  .hero-tag {
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    font-size: 0.75rem;
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 9vw, 7rem);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 0.95;
+    position: relative;
+    z-index: 1;
+    letter-spacing: -0.01em;
+  }
+
+  .hero h1 .amp {
+    font-style: italic;
+    color: var(--gold);
+    font-size: 0.8em;
+    display: block;
+    margin: 8px 0;
+  }
+
+  .hero-date {
+    margin-top: 32px;
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+    font-size: 1.2rem;
+    color: rgba(255,255,255,0.7);
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-divider {
+    width: 80px; height: 1px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 28px auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* ---- CONTADOR ---- */
+  .countdown-section {
+    padding: 80px 20px;
+    text-align: center;
+    background: linear-gradient(180deg, var(--bordo1) 0%, var(--bordo4) 100%);
+    position: relative;
+  }
+
+  .countdown-section::after {
+    content: '';
+    position: absolute;
+    bottom: -1px; left: 0; right: 0;
+    height: 60px;
+    background: var(--cream);
+    clip-path: ellipse(55% 100% at 50% 100%);
+  }
+
+  .countdown-label {
+    font-family: 'Jost', sans-serif;
+    font-weight: 300;
+    font-size: 0.7rem;
+    letter-spacing: 0.45em;
+    text-transform: uppercase;
+    color: var(--gold-light);
+    margin-bottom: 40px;
+  }
+
+  .countdown {
+    display: flex;
+    justify-content: center;
+    gap: clamp(16px, 4vw, 48px);
+    flex-wrap: wrap;
+  }
+
+  .countdown-item {
+    text-align: center;
+    min-width: 80px;
+  }
+
+  .countdown-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(3rem, 8vw, 5.5rem);
+    font-weight: 300;
+    color: var(--white);
+    line-height: 1;
+    display: block;
+  }
+
+  .countdown-unit {
+    font-size: 0.65rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-top: 6px;
+    display: block;
+  }
+
+  .countdown-sep {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 3rem;
+    color: rgba(255,255,255,0.2);
+    align-self: flex-start;
+    padding-top: 10px;
+  }
+
+  /* ---- SECTIONS ---- */
+  .section {
+    padding: 80px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 300;
+    color: var(--bordo1);
+    text-align: center;
+    margin-bottom: 12px;
+  }
+
+  .section-subtitle {
+    text-align: center;
+    color: var(--bordo3);
+    font-size: 0.8rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 56px;
+  }
+
+  /* ---- GRID DE PRESENTES ---- */
+  .gifts-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 28px;
+  }
+
+  .gift-card {
+    background: var(--white);
+    border-radius: 4px;
+    overflow: hidden;
+    box-shadow: 0 4px 24px rgba(107,15,26,0.08);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    position: relative;
+    border: 1px solid rgba(107,15,26,0.06);
+  }
+
+  .gift-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 16px 48px rgba(107,15,26,0.16);
+  }
+
+  .gift-card.comprado::before {
+    content: '✓ Presenteado';
+    position: absolute;
+    top: 14px; right: 14px;
+    background: var(--bordo1);
+    color: var(--white);
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border-radius: 2px;
+    z-index: 2;
+  }
+
+  .gift-card.comprado .gift-img { filter: grayscale(40%) brightness(0.9); }
+
+  .gift-img {
+    width: 100%; height: 200px;
+    object-fit: cover;
+    display: block;
+    background: linear-gradient(135deg, #f0e6e8, #e8d0d4);
+  }
+
+  .gift-img-placeholder {
+    width: 100%; height: 200px;
+    background: linear-gradient(135deg, rgba(107,15,26,0.08), rgba(196,56,78,0.08));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 3rem; color: rgba(107,15,26,0.2);
+  }
+
+  .gift-body {
+    padding: 24px;
+  }
+
+  .gift-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 8px;
+  }
+
+  .gift-price {
+    font-size: 0.85rem;
+    color: var(--bordo2);
+    font-weight: 500;
+    margin-bottom: 16px;
+  }
+
+  .gift-desc {
+    font-size: 0.82rem;
+    color: #6b5a5c;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .btn-comprar {
+    display: block;
+    width: 100%;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--bordo1), var(--bordo2));
+    color: var(--white);
+    border: none;
+    border-radius: 2px;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.75rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+
+  .btn-comprar:hover { opacity: 0.85; transform: scale(1.01); }
+  .btn-comprar:disabled { background: #ccc; cursor: not-allowed; }
+
+  .gift-link {
+    display: block;
+    text-align: center;
+    margin-top: 10px;
+    font-size: 0.75rem;
+    color: var(--bordo3);
+    text-decoration: none;
+    letter-spacing: 0.1em;
+  }
+  .gift-link:hover { text-decoration: underline; }
+
+  /* ---- COTAS ---- */
+  .cotas-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 28px;
+  }
+
+  .cota-card {
+    border: 1px solid rgba(107,15,26,0.15);
+    border-radius: 4px;
+    padding: 36px 32px;
+    text-align: center;
+    background: var(--white);
+    box-shadow: 0 4px 20px rgba(107,15,26,0.06);
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cota-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, var(--bordo1), var(--bordo3));
+  }
+
+  .cota-card:hover { transform: translateY(-4px); box-shadow: 0 12px 40px rgba(107,15,26,0.14); }
+
+  .cota-icon { font-size: 2.5rem; margin-bottom: 16px; display: block; }
+
+  .cota-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.6rem;
+    font-weight: 400;
+    color: var(--bordo1);
+    margin-bottom: 12px;
+  }
+
+  .cota-desc {
+    font-size: 0.83rem;
+    color: #6b5a5c;
+    line-height: 1.7;
+    margin-bottom: 20px;
+  }
+
+  .cota-price {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    color: var(--bordo2);
+    margin-bottom: 8px;
+    font-weight: 600;
+  }
+
+  .cota-progress {
+    background: rgba(107,15,26,0.08);
+    border-radius: 99px;
+    height: 6px;
+    margin: 12px 0 20px;
+    overflow: hidden;
+  }
+
+  .cota-progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--bordo1), var(--gold));
+    border-radius: 99px;
+    transition: width 0.6s ease;
+  }
+
+  .cota-meta {
+    font-size: 0.72rem;
+    color: #9a7a7d;
+    letter-spacing: 0.1em;
+    margin-bottom: 20px;
+  }
+
+  /* ---- MODAL ---- */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26,5,9,0.85);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(4px);
+  }
+
+  .modal-overlay.open { display: flex; }
+
+  .modal {
+    background: var(--white);
+    border-radius: 6px;
+    padding: 48px 40px;
+    max-width: 460px;
+    width: 100%;
+    text-align: center;
+    position: relative;
+    box-shadow: 0 32px 80px rgba(26,5,9,0.5);
+    animation: modalIn 0.3s ease;
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.92) translateY(20px); }
+    to { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 20px;
+    background: none; border: none;
+    font-size: 1.4rem; color: #aaa;
+    cursor: pointer;
+    line-height: 1;
+  }
+
+  .modal-close:hover { color: var(--bordo1); }
+
+  .modal h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem;
+    color: var(--bordo1);
+    margin-bottom: 8px;
+    font-weight: 400;
+  }
+
+  .modal-gift-name {
+    font-size: 0.8rem;
+    color: var(--bordo3);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+  }
+
+  .pix-box {
+    background: linear-gradient(135deg, rgba(107,15,26,0.04), rgba(196,56,78,0.06));
+    border: 1px solid rgba(107,15,26,0.1);
+    border-radius: 4px;
+    padding: 24px;
+    margin: 20px 0;
+  }
+
+  .pix-label {
+    font-size: 0.7rem;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--bordo3);
+    margin-bottom: 10px;
+  }
+
+  .pix-key {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.5rem;
+    color: var(--bordo1);
+    font-weight: 600;
+    word-break: break-all;
+  }
+
+  .pix-value {
+    margin-top: 16px;
+    font-size: 0.8rem;
+    color: #888;
+  }
+
+  .btn-copy {
+    margin-top: 16px;
+    padding: 10px 24px;
+    background: var(--bordo1);
+    color: var(--white);
+    border: none; border-radius: 2px;
+    font-size: 0.75rem; letter-spacing: 0.25em;
+    text-transform: uppercase; cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .btn-copy:hover { opacity: 0.8; }
+
+  .btn-confirmar {
+    display: block; width: 100%;
+    margin-top: 20px;
+    padding: 14px;
+    background: linear-gradient(135deg, var(--bordo1), var(--bordo3));
+    color: var(--white); border: none;
+    border-radius: 2px; font-family: 'Jost', sans-serif;
+    font-size: 0.75rem; letter-spacing: 0.3em;
+    text-transform: uppercase; cursor: pointer;
+    transition: opacity 0.2s;
+  }
+
+  .btn-confirmar:hover { opacity: 0.85; }
+
+  /* ---- ADMIN ---- */
+  .admin-btn {
+    position: fixed;
+    bottom: 28px; right: 28px;
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--bordo1), var(--bordo3));
+    color: var(--white); border: none;
+    font-size: 1.3rem; cursor: pointer;
+    box-shadow: 0 6px 20px rgba(107,15,26,0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+    z-index: 900;
+    display: flex; align-items: center; justify-content: center;
+  }
+
+  .admin-btn:hover { transform: scale(1.1); box-shadow: 0 10px 30px rgba(107,15,26,0.5); }
+
+  /* ---- ADMIN PANEL ---- */
+  .admin-panel {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(26,5,9,0.9);
+    z-index: 1100;
+    overflow-y: auto;
+    padding: 40px 20px;
+  }
+
+  .admin-panel.open { display: block; }
+
+  .admin-container {
+    max-width: 860px;
+    margin: 0 auto;
+    background: var(--white);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .admin-header {
+    background: linear-gradient(135deg, var(--dark), var(--bordo1));
+    padding: 32px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .admin-header h2 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem;
+    color: var(--white);
+    font-weight: 300;
+  }
+
+  .admin-close {
+    background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+    color: var(--white); padding: 8px 18px;
+    border-radius: 2px; cursor: pointer;
+    font-family: 'Jost', sans-serif; font-size: 0.75rem;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    transition: background 0.2s;
+  }
+
+  .admin-close:hover { background: rgba(255,255,255,0.2); }
+
+  .admin-body { padding: 40px; }
+
+  .admin-tabs {
+    display: flex; gap: 0;
+    border-bottom: 2px solid rgba(107,15,26,0.1);
+    margin-bottom: 36px;
+  }
+
+  .admin-tab {
+    padding: 12px 24px;
+    background: none; border: none;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.75rem; letter-spacing: 0.25em;
+    text-transform: uppercase; cursor: pointer;
+    color: #999;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .admin-tab.active { color: var(--bordo1); border-bottom-color: var(--bordo1); }
+
+  .tab-content { display: none; }
+  .tab-content.active { display: block; }
+
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; } }
+
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-group.full { grid-column: 1 / -1; }
+
+  label {
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--bordo3);
+    font-weight: 500;
+  }
+
+  input[type="text"], input[type="number"], input[type="url"], input[type="password"], textarea, select {
+    padding: 12px 14px;
+    border: 1px solid rgba(107,15,26,0.15);
+    border-radius: 3px;
+    font-family: 'Jost', sans-serif;
+    font-size: 0.9rem;
+    color: var(--dark);
+    background: var(--cream);
+    transition: border-color 0.2s;
+    width: 100%;
+  }
+
+  input:focus, textarea:focus, select:focus {
+    outline: none;
+    border-color: var(--bordo2);
+  }
+
+  textarea { resize: vertical; min-height: 80px; }
+
+  .btn-submit {
+    padding: 14px 32px;
+    background: linear-gradient(135deg, var(--bordo1), var(--bordo3));
+    color: var(--white); border: none;
+    border-radius: 2px; font-family: 'Jost', sans-serif;
+    font-size: 0.75rem; letter-spacing: 0.3em;
+    text-transform: uppercase; cursor: pointer;
+    transition: opacity 0.2s;
+    margin-top: 8px;
+  }
+
+  .btn-submit:hover { opacity: 0.85; }
+
+  .admin-list { margin-top: 36px; }
+
+  .admin-list-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.4rem; color: var(--bordo1);
+    margin-bottom: 16px; font-weight: 400;
+  }
+
+  .admin-item {
+    display: flex; align-items: center; gap: 14px;
+    padding: 14px 18px;
+    border: 1px solid rgba(107,15,26,0.08);
+    border-radius: 3px; margin-bottom: 10px;
+    background: var(--cream);
+    transition: border-color 0.2s;
+  }
+
+  .admin-item:hover { border-color: rgba(107,15,26,0.2); }
+
+  .admin-item-info { flex: 1; min-width: 0; }
+
+  .admin-item-name {
+    font-weight: 500; font-size: 0.9rem;
+    color: var(--dark); white-space: nowrap;
+    overflow: hidden; text-overflow: ellipsis;
+  }
+
+  .admin-item-meta { font-size: 0.75rem; color: #999; margin-top: 2px; }
+
+  .btn-delete {
+    background: none; border: 1px solid rgba(107,15,26,0.2);
+    color: var(--bordo2); padding: 6px 14px;
+    border-radius: 2px; cursor: pointer; font-size: 0.75rem;
+    transition: background 0.2s, color 0.2s; white-space: nowrap;
+  }
+
+  .btn-delete:hover { background: var(--bordo1); color: white; border-color: var(--bordo1); }
+
+  /* ---- PIX CONFIG ---- */
+  .pix-config { margin-top: 28px; }
+
+  /* ---- LOGIN ---- */
+  .login-box {
+    max-width: 360px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .login-box h3 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 1.8rem; color: var(--bordo1);
+    margin-bottom: 8px;
+  }
+
+  .login-box p { font-size: 0.83rem; color: #999; margin-bottom: 28px; }
+
+  .login-error {
+    color: var(--bordo2); font-size: 0.8rem;
+    margin-top: 10px; min-height: 20px;
+  }
+
+  /* ---- ESTADO VAZIO ---- */
+  .empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: rgba(107,15,26,0.3);
+  }
+
+  .empty-state span { font-size: 3rem; display: block; margin-bottom: 16px; }
+  .empty-state p { font-size: 0.9rem; }
+
+  /* ---- FOOTER ---- */
+  footer {
+    background: var(--dark);
+    padding: 60px 20px;
+    text-align: center;
+  }
+
+  footer .footer-names {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 2rem; color: var(--white);
+    font-weight: 300; margin-bottom: 8px;
+  }
+
+  footer p {
+    font-size: 0.75rem; color: rgba(255,255,255,0.35);
+    letter-spacing: 0.25em; text-transform: uppercase;
+  }
+
+  /* ---- LOADING ---- */
+  .loading {
+    text-align: center; padding: 40px;
+    color: rgba(107,15,26,0.4); font-size: 0.9rem;
+  }
+
+  /* ---- FIREBASE BANNER ---- */
+  .firebase-banner {
+    background: #fff3cd;
+    border: 1px solid #ffc107;
+    border-radius: 4px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    font-size: 0.85rem;
+    color: #856404;
+    display: none;
+  }
+
+  .firebase-banner.show { display: block; }
+
+  @media (max-width: 600px) {
+    .admin-body { padding: 24px 20px; }
+    .admin-header { padding: 24px 20px; }
+    .modal { padding: 36px 24px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-ornament"></div>
+  <div class="hero-ornament"></div>
+  <div class="hero-ornament"></div>
+  <p class="hero-tag">Lista de Presentes</p>
+  <h1>
+    Kamilly
+    <span class="amp">&</span>
+    Tiago
+  </h1>
+  <div class="hero-divider"></div>
+  <p class="hero-date">20 de Novembro de 2027</p>
+</section>
+
+<!-- CONTADOR -->
+<section class="countdown-section">
+  <p class="countdown-label">Faltam</p>
+  <div class="countdown">
+    <div class="countdown-item">
+      <span class="countdown-num" id="cd-dias">000</span>
+      <span class="countdown-unit">Dias</span>
+    </div>
+    <span class="countdown-sep">·</span>
+    <div class="countdown-item">
+      <span class="countdown-num" id="cd-horas">00</span>
+      <span class="countdown-unit">Horas</span>
+    </div>
+    <span class="countdown-sep">·</span>
+    <div class="countdown-item">
+      <span class="countdown-num" id="cd-min">00</span>
+      <span class="countdown-unit">Minutos</span>
+    </div>
+    <span class="countdown-sep">·</span>
+    <div class="countdown-item">
+      <span class="countdown-num" id="cd-seg">00</span>
+      <span class="countdown-unit">Segundos</span>
+    </div>
+  </div>
+</section>
+
+<!-- PRESENTES -->
+<div class="section">
+  <h2 class="section-title">Lista de Presentes</h2>
+  <p class="section-subtitle">Cada presente é uma lembrança do seu carinho</p>
+  <div id="gifts-grid" class="gifts-grid">
+    <div class="loading">Carregando presentes...</div>
+  </div>
+</div>
+
+<!-- COTAS -->
+<div style="background: linear-gradient(180deg, var(--cream) 0%, #f5e8ea 100%); padding: 1px 0;">
+  <div class="section">
+    <h2 class="section-title">Experiências & Cotas</h2>
+    <p class="section-subtitle">Contribua para momentos inesquecíveis</p>
+    <div id="cotas-grid" class="cotas-grid">
+      <div class="loading">Carregando cotas...</div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <p class="footer-names">Kamilly & Tiago</p>
+  <p>Com amor, aguardamos você</p>
+</footer>
+
+<!-- BOTÃO ADMIN -->
+<button class="admin-btn" onclick="openAdminLogin()" title="Administrador">⚙</button>
+
+<!-- MODAL PIX -->
+<div class="modal-overlay" id="pix-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('pix-modal')">×</button>
+    <h3>Presentear</h3>
+    <p class="modal-gift-name" id="modal-gift-name"></p>
+    <div class="pix-box">
+      <p class="pix-label">Chave Pix</p>
+      <p class="pix-key" id="modal-pix-key">—</p>
+      <p class="pix-value" id="modal-pix-value"></p>
+    </div>
+    <button class="btn-copy" onclick="copyPix()">Copiar Chave</button>
+    <button class="btn-confirmar" onclick="confirmarCompra()">Já enviei o pix ✓</button>
+    <p style="font-size:0.72rem;color:#bbb;margin-top:14px;">Após o envio, clique no botão acima para marcar como presenteado.</p>
+  </div>
+</div>
+
+<!-- ADMIN LOGIN -->
+<div class="modal-overlay" id="login-modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal('login-modal')">×</button>
+    <div class="login-box">
+      <h3>Administrador</h3>
+      <p>Acesso restrito ao casal</p>
+      <div class="form-group">
+        <label>Senha</label>
+        <input type="password" id="admin-senha" placeholder="••••••••" onkeydown="if(event.key==='Enter')checkLogin()"/>
+      </div>
+      <p class="login-error" id="login-error"></p>
+      <button class="btn-submit" style="width:100%;margin-top:16px" onclick="checkLogin()">Entrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN PANEL -->
+<div class="admin-panel" id="admin-panel">
+  <div class="admin-container">
+    <div class="admin-header">
+      <h2>Painel Administrativo</h2>
+      <button class="admin-close" onclick="closeAdmin()">Fechar</button>
+    </div>
+    <div class="admin-body">
+
+      <div id="firebase-warn" class="firebase-banner">
+        ⚠️ <strong>Configure o Firebase!</strong> Edite o arquivo e substitua as chaves de configuração do Firebase para que os dados sejam salvos na nuvem. <a href="https://console.firebase.google.com/" target="_blank">Acessar Console Firebase</a>
+      </div>
+
+      <div class="admin-tabs">
+        <button class="admin-tab active" onclick="switchTab('tab-presente')">+ Presente</button>
+        <button class="admin-tab" onclick="switchTab('tab-cota')">+ Cota</button>
+        <button class="admin-tab" onclick="switchTab('tab-pix')">Chave Pix</button>
+        <button class="admin-tab" onclick="switchTab('tab-lista')">Gerenciar</button>
+      </div>
+
+      <!-- TAB: ADICIONAR PRESENTE -->
+      <div class="tab-content active" id="tab-presente">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nome do presente *</label>
+            <input type="text" id="p-nome" placeholder="Ex: Jogo de Panelas"/>
+          </div>
+          <div class="form-group">
+            <label>Valor (R$)</label>
+            <input type="number" id="p-valor" placeholder="Ex: 350"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full">
+            <label>URL da imagem</label>
+            <input type="url" id="p-imagem" placeholder="https://..."/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full">
+            <label>Link do produto (opcional)</label>
+            <input type="url" id="p-link" placeholder="https://..."/>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:16px">
+          <label>Descrição (opcional)</label>
+          <textarea id="p-desc" placeholder="Breve descrição do presente..."></textarea>
+        </div>
+        <button class="btn-submit" onclick="addPresente()">Adicionar Presente</button>
+        <p id="p-feedback" style="margin-top:10px;font-size:0.82rem;color:var(--bordo2)"></p>
+      </div>
+
+      <!-- TAB: ADICIONAR COTA -->
+      <div class="tab-content" id="tab-cota">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nome da cota *</label>
+            <input type="text" id="c-nome" placeholder="Ex: Jantar Romântico"/>
+          </div>
+          <div class="form-group">
+            <label>Valor por cota (R$) *</label>
+            <input type="number" id="c-valor" placeholder="Ex: 150"/>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Total de cotas</label>
+            <input type="number" id="c-total" placeholder="Ex: 4"/>
+          </div>
+          <div class="form-group">
+            <label>Ícone (emoji)</label>
+            <input type="text" id="c-icone" placeholder="🍷" maxlength="4"/>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:16px">
+          <label>Descrição</label>
+          <textarea id="c-desc" placeholder="Descreva a experiência..."></textarea>
+        </div>
+        <button class="btn-submit" onclick="addCota()">Adicionar Cota</button>
+        <p id="c-feedback" style="margin-top:10px;font-size:0.82rem;color:var(--bordo2)"></p>
+      </div>
+
+      <!-- TAB: PIX -->
+      <div class="tab-content pix-config" id="tab-pix">
+        <p style="font-size:0.85rem;color:#888;margin-bottom:24px;line-height:1.6">
+          Configure a chave Pix que aparecerá para os convidados ao clicarem em "Presentear".
+        </p>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tipo da chave</label>
+            <select id="pix-tipo">
+              <option value="Telefone">Telefone</option>
+              <option value="CPF">CPF</option>
+              <option value="CNPJ">CNPJ</option>
+              <option value="E-mail">E-mail</option>
+              <option value="Aleatória">Chave Aleatória</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Chave Pix *</label>
+            <input type="text" id="pix-chave" placeholder="(11) 99999-9999"/>
+          </div>
+        </div>
+        <div class="form-group" style="margin-bottom:16px">
+          <label>Nome do favorecido</label>
+          <input type="text" id="pix-nome" placeholder="Kamilly Sobrenome"/>
+        </div>
+        <button class="btn-submit" onclick="savePix()">Salvar Chave Pix</button>
+        <p id="pix-feedback" style="margin-top:10px;font-size:0.82rem;color:var(--bordo2)"></p>
+      </div>
+
+      <!-- TAB: GERENCIAR -->
+      <div class="tab-content" id="tab-lista">
+        <div class="admin-list">
+          <h3 class="admin-list-title">Presentes</h3>
+          <div id="admin-presentes-list"><div class="loading">Carregando...</div></div>
+        </div>
+        <div class="admin-list" style="margin-top:36px">
+          <h3 class="admin-list-title">Cotas</h3>
+          <div id="admin-cotas-list"><div class="loading">Carregando...</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// ===================== CONFIG =====================
+const ADMIN_SENHA = "kamilly2027";
+const PIX_DEFAULT = { tipo: "Telefone", chave: "(00) 00000-0000", nome: "Kamilly & Tiago" };
+
+// ===================== STATE =====================
+let pixConfig = {...PIX_DEFAULT};
+let currentGiftId = null;
+let currentGiftName = null;
+let db = null;
+let fbFuncs = null;
+let dbReady = false;
+
+// ===================== FIREBASE INIT =====================
+function initDB() {
+  db = window._db;
+  fbFuncs = window._fbFuncs;
+  dbReady = true;
+  loadAll();
+}
+
+if (window._dbReady) {
+  initDB();
+} else {
+  window.addEventListener('firebase-ready', initDB);
+  // Timeout fallback - show demo mode
+  setTimeout(() => {
+    if (!dbReady) {
+      console.warn("Firebase não configurado — modo demo");
+      loadDemoMode();
+    }
+  }, 3000);
+}
+
+// ===================== DEMO MODE (sem Firebase) =====================
+let localPresentes = JSON.parse(localStorage.getItem('presentes') || '[]');
+let localCotas = JSON.parse(localStorage.getItem('cotas') || '[]');
+let localPix = JSON.parse(localStorage.getItem('pixConfig') || 'null') || {...PIX_DEFAULT};
+
+function loadDemoMode() {
+  pixConfig = localPix;
+  renderPresentes(localPresentes);
+  renderCotas(localCotas);
+}
+
+function saveLocal() {
+  localStorage.setItem('presentes', JSON.stringify(localPresentes));
+  localStorage.setItem('cotas', JSON.stringify(localCotas));
+  localStorage.setItem('pixConfig', JSON.stringify(pixConfig));
+}
+
+// ===================== LOAD ALL =====================
+async function loadAll() {
+  if (!dbReady) return;
+
+  try {
+    const { collection, getDocs, query, orderBy, onSnapshot } = fbFuncs;
+
+    // Listen to presentes
+    const presentesRef = collection(db, "presentes");
+    onSnapshot(query(presentesRef, orderBy("createdAt", "asc")), (snap) => {
+      const list = snap.docs.map(d => ({id: d.id, ...d.data()}));
+      renderPresentes(list);
+      renderAdminList('admin-presentes-list', list, 'presente');
+    });
+
+    // Listen to cotas
+    const cotasRef = collection(db, "cotas");
+    onSnapshot(query(cotasRef, orderBy("createdAt", "asc")), (snap) => {
+      const list = snap.docs.map(d => ({id: d.id, ...d.data()}));
+      renderCotas(list);
+      renderAdminList('admin-cotas-list', list, 'cota');
+    });
+
+    // Load pix config
+    const pixSnap = await getDocs(collection(db, "config"));
+    pixSnap.forEach(d => {
+      if (d.id === "pix") pixConfig = d.data();
+    });
+
+  } catch(e) {
+    console.error("Erro Firebase:", e);
+    loadDemoMode();
+  }
+}
+
+// ===================== RENDER PRESENTES =====================
+function renderPresentes(list) {
+  const grid = document.getElementById('gifts-grid');
+  if (!list.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><span>🎁</span><p>Nenhum presente adicionado ainda.</p></div>`;
+    return;
+  }
+  grid.innerHTML = list.map(p => `
+    <div class="gift-card ${p.comprado ? 'comprado' : ''}">
+      ${p.imagem ? `<img class="gift-img" src="${p.imagem}" alt="${p.nome}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <div class="gift-img-placeholder" style="display:none">🎁</div>` :
+        `<div class="gift-img-placeholder">🎁</div>`}
+      <div class="gift-body">
+        <h3 class="gift-name">${p.nome}</h3>
+        ${p.valor ? `<p class="gift-price">R$ ${Number(p.valor).toLocaleString('pt-BR', {minimumFractionDigits:2})}</p>` : ''}
+        ${p.desc ? `<p class="gift-desc">${p.desc}</p>` : ''}
+        <button class="btn-comprar" onclick="openPix('${p.id}','${escapeJs(p.nome)}',${p.valor||0})"
+          ${p.comprado ? 'disabled' : ''}>
+          ${p.comprado ? '✓ Presenteado' : 'Presentear'}
+        </button>
+        ${p.link ? `<a class="gift-link" href="${p.link}" target="_blank">Ver produto →</a>` : ''}
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===================== RENDER COTAS =====================
+function renderCotas(list) {
+  const grid = document.getElementById('cotas-grid');
+  if (!list.length) {
+    grid.innerHTML = `<div class="empty-state" style="grid-column:1/-1"><span>✨</span><p>Nenhuma cota adicionada ainda.</p></div>`;
+    return;
+  }
+  grid.innerHTML = list.map(c => {
+    const total = Number(c.total) || 1;
+    const compradas = Number(c.compradas) || 0;
+    const pct = Math.round((compradas / total) * 100);
+    return `
+    <div class="cota-card">
+      <span class="cota-icon">${c.icone || '✨'}</span>
+      <h3 class="cota-name">${c.nome}</h3>
+      ${c.desc ? `<p class="cota-desc">${c.desc}</p>` : ''}
+      <p class="cota-price">R$ ${Number(c.valor).toLocaleString('pt-BR', {minimumFractionDigits:2})}</p>
+      <div class="cota-progress"><div class="cota-progress-bar" style="width:${pct}%"></div></div>
+      <p class="cota-meta">${compradas} de ${total} cotas contribuídas</p>
+      <button class="btn-comprar"
+        onclick="openPix('${c.id}','${escapeJs(c.nome)}',${c.valor||0},true)"
+        ${compradas >= total ? 'disabled' : ''}>
+        ${compradas >= total ? '✓ Meta atingida' : 'Contribuir'}
+      </button>
+    </div>
+    `;
+  }).join('');
+}
+
+// ===================== RENDER ADMIN LIST =====================
+function renderAdminList(elId, list, type) {
+  const el = document.getElementById(elId);
+  if (!list.length) {
+    el.innerHTML = `<p style="font-size:0.83rem;color:#bbb">Nenhum item ainda.</p>`;
+    return;
+  }
+  el.innerHTML = list.map(item => `
+    <div class="admin-item">
+      <div class="admin-item-info">
+        <p class="admin-item-name">${type === 'cota' ? (item.icone || '') + ' ' : ''}${item.nome}</p>
+        <p class="admin-item-meta">R$ ${Number(item.valor || 0).toLocaleString('pt-BR', {minimumFractionDigits:2})}
+          ${item.comprado ? ' · ✓ Presenteado' : ''}
+          ${type === 'cota' ? ` · ${item.compradas||0}/${item.total||1} cotas` : ''}
+        </p>
+      </div>
+      <button class="btn-delete" onclick="deleteItem('${item.id}','${type}')">Excluir</button>
+    </div>
+  `).join('');
+}
+
+// ===================== MODAL PIX =====================
+function openPix(id, nome, valor, isCota) {
+  currentGiftId = id;
+  currentGiftName = nome;
+  currentIsCota = isCota || false;
+  document.getElementById('modal-gift-name').textContent = nome;
+  document.getElementById('modal-pix-key').textContent = pixConfig.chave || PIX_DEFAULT.chave;
+  const val = valor ? `Valor sugerido: R$ ${Number(valor).toLocaleString('pt-BR', {minimumFractionDigits:2})}` : '';
+  document.getElementById('modal-pix-value').textContent = (pixConfig.nome ? 'Favorecido: ' + pixConfig.nome : '') + (val ? '\n' + val : '');
+  document.getElementById('pix-modal').classList.add('open');
+}
+
+function copyPix() {
+  const chave = pixConfig.chave || PIX_DEFAULT.chave;
+  navigator.clipboard.writeText(chave).then(() => {
+    const btn = document.querySelector('.btn-copy');
+    btn.textContent = '✓ Copiado!';
+    setTimeout(() => btn.textContent = 'Copiar Chave', 2000);
+  });
+}
+
+async function confirmarCompra() {
+  if (!currentGiftId) return;
+  try {
+    if (dbReady) {
+      const { doc, updateDoc } = fbFuncs;
+      if (currentIsCota) {
+        // find current count
+        const { getDocs, collection, query } = fbFuncs;
+        const snap = await getDocs(collection(db, "cotas"));
+        snap.forEach(async d => {
+          if (d.id === currentGiftId) {
+            const total = d.data().total || 1;
+            const compradas = (d.data().compradas || 0) + 1;
+            await updateDoc(doc(db, "cotas", currentGiftId), { compradas: Math.min(compradas, total) });
+          }
+        });
+      } else {
+        await updateDoc(doc(db, "presentes", currentGiftId), { comprado: true });
+      }
+    } else {
+      // demo mode
+      if (currentIsCota) {
+        const idx = localCotas.findIndex(c => c.id === currentGiftId);
+        if (idx >= 0) { localCotas[idx].compradas = (localCotas[idx].compradas || 0) + 1; }
+      } else {
+        const idx = localPresentes.findIndex(p => p.id === currentGiftId);
+        if (idx >= 0) localPresentes[idx].comprado = true;
+      }
+      saveLocal();
+      renderPresentes(localPresentes);
+      renderCotas(localCotas);
+    }
+    closeModal('pix-modal');
+  } catch(e) { console.error(e); alert("Erro ao confirmar. Tente novamente."); }
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+}
+
+// ===================== ADMIN =====================
+function openAdminLogin() {
+  document.getElementById('login-error').textContent = '';
+  document.getElementById('admin-senha').value = '';
+  document.getElementById('login-modal').classList.add('open');
+  setTimeout(() => document.getElementById('admin-senha').focus(), 100);
+}
+
+function checkLogin() {
+  const val = document.getElementById('admin-senha').value;
+  if (val === ADMIN_SENHA) {
+    closeModal('login-modal');
+    openAdmin();
+  } else {
+    document.getElementById('login-error').textContent = 'Senha incorreta.';
+    document.getElementById('admin-senha').value = '';
+  }
+}
+
+function openAdmin() {
+  document.getElementById('admin-panel').classList.add('open');
+  if (!dbReady) {
+    document.getElementById('firebase-warn').classList.add('show');
+  }
+  // Pre-fill pix
+  document.getElementById('pix-chave').value = pixConfig.chave || '';
+  document.getElementById('pix-nome').value = pixConfig.nome || '';
+  document.getElementById('pix-tipo').value = pixConfig.tipo || 'Telefone';
+  // Refresh admin list
+  if (!dbReady) {
+    renderAdminList('admin-presentes-list', localPresentes, 'presente');
+    renderAdminList('admin-cotas-list', localCotas, 'cota');
+  }
+}
+
+function closeAdmin() {
+  document.getElementById('admin-panel').classList.remove('open');
+}
+
+function switchTab(id) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+}
+
+// ===================== ADD PRESENTE =====================
+async function addPresente() {
+  const nome = document.getElementById('p-nome').value.trim();
+  if (!nome) { document.getElementById('p-feedback').textContent = 'Informe o nome do presente.'; return; }
+  const obj = {
+    nome,
+    valor: document.getElementById('p-valor').value || null,
+    imagem: document.getElementById('p-imagem').value.trim() || null,
+    link: document.getElementById('p-link').value.trim() || null,
+    desc: document.getElementById('p-desc').value.trim() || null,
+    comprado: false,
+    createdAt: Date.now()
+  };
+  try {
+    if (dbReady) {
+      const { collection, addDoc } = fbFuncs;
+      await addDoc(collection(db, "presentes"), obj);
+    } else {
+      obj.id = 'local_' + Date.now();
+      localPresentes.push(obj);
+      saveLocal();
+      renderPresentes(localPresentes);
+      renderAdminList('admin-presentes-list', localPresentes, 'presente');
+    }
+    document.getElementById('p-feedback').textContent = '✓ Presente adicionado!';
+    ['p-nome','p-valor','p-imagem','p-link','p-desc'].forEach(id => document.getElementById(id).value = '');
+    setTimeout(() => document.getElementById('p-feedback').textContent = '', 3000);
+  } catch(e) { document.getElementById('p-feedback').textContent = 'Erro: ' + e.message; }
+}
+
+// ===================== ADD COTA =====================
+async function addCota() {
+  const nome = document.getElementById('c-nome').value.trim();
+  const valor = document.getElementById('c-valor').value;
+  if (!nome || !valor) { document.getElementById('c-feedback').textContent = 'Informe nome e valor.'; return; }
+  const obj = {
+    nome,
+    valor,
+    total: document.getElementById('c-total').value || 1,
+    icone: document.getElementById('c-icone').value || '✨',
+    desc: document.getElementById('c-desc').value.trim() || null,
+    compradas: 0,
+    createdAt: Date.now()
+  };
+  try {
+    if (dbReady) {
+      const { collection, addDoc } = fbFuncs;
+      await addDoc(collection(db, "cotas"), obj);
+    } else {
+      obj.id = 'local_' + Date.now();
+      localCotas.push(obj);
+      saveLocal();
+      renderCotas(localCotas);
+      renderAdminList('admin-cotas-list', localCotas, 'cota');
+    }
+    document.getElementById('c-feedback').textContent = '✓ Cota adicionada!';
+    ['c-nome','c-valor','c-total','c-icone','c-desc'].forEach(id => document.getElementById(id).value = '');
+    setTimeout(() => document.getElementById('c-feedback').textContent = '', 3000);
+  } catch(e) { document.getElementById('c-feedback').textContent = 'Erro: ' + e.message; }
+}
+
+// ===================== SAVE PIX =====================
+async function savePix() {
+  const chave = document.getElementById('pix-chave').value.trim();
+  if (!chave) { document.getElementById('pix-feedback').textContent = 'Informe a chave Pix.'; return; }
+  pixConfig = {
+    tipo: document.getElementById('pix-tipo').value,
+    chave,
+    nome: document.getElementById('pix-nome').value.trim()
+  };
+  try {
+    if (dbReady) {
+      const { doc, updateDoc, collection, addDoc, getDocs } = fbFuncs;
+      const snap = await getDocs(collection(db, "config"));
+      let exists = false;
+      snap.forEach(d => { if (d.id === "pix") exists = true; });
+      if (exists) {
+        await updateDoc(doc(db, "config", "pix"), pixConfig);
+      } else {
+        const { setDoc } = await import("https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js");
+        await setDoc(doc(db, "config", "pix"), pixConfig);
+      }
+    } else {
+      localStorage.setItem('pixConfig', JSON.stringify(pixConfig));
+    }
+    document.getElementById('pix-feedback').textContent = '✓ Chave Pix salva!';
+    setTimeout(() => document.getElementById('pix-feedback').textContent = '', 3000);
+  } catch(e) { document.getElementById('pix-feedback').textContent = 'Erro: ' + e.message; }
+}
+
+// ===================== DELETE =====================
+async function deleteItem(id, type) {
+  if (!confirm('Tem certeza que deseja excluir este item?')) return;
+  const colName = type === 'presente' ? 'presentes' : 'cotas';
+  try {
+    if (dbReady) {
+      const { doc, deleteDoc } = fbFuncs;
+      await deleteDoc(doc(db, colName, id));
+    } else {
+      if (type === 'presente') {
+        localPresentes = localPresentes.filter(p => p.id !== id);
+        renderPresentes(localPresentes);
+        renderAdminList('admin-presentes-list', localPresentes, 'presente');
+      } else {
+        localCotas = localCotas.filter(c => c.id !== id);
+        renderCotas(localCotas);
+        renderAdminList('admin-cotas-list', localCotas, 'cota');
+      }
+      saveLocal();
+    }
+  } catch(e) { alert('Erro ao excluir: ' + e.message); }
+}
+
+// ===================== UTILS =====================
+function escapeJs(str) {
+  return str.replace(/'/g, "\\'").replace(/"/g, '\\"');
+}
+
+// ===================== COUNTDOWN =====================
+function updateCountdown() {
+  const target = new Date('2027-11-20T18:00:00');
+  const now = new Date();
+  const diff = target - now;
+  if (diff <= 0) {
+    document.querySelector('.countdown-section').innerHTML = `
+      <p class="countdown-label" style="font-size:1.2rem;color:var(--gold-light)">🎊 Felicidades, Kamilly & Tiago! 🎊</p>`;
+    return;
+  }
+  const dias = Math.floor(diff / 86400000);
+  const horas = Math.floor((diff % 86400000) / 3600000);
+  const min = Math.floor((diff % 3600000) / 60000);
+  const seg = Math.floor((diff % 60000) / 1000);
+  document.getElementById('cd-dias').textContent = String(dias).padStart(3, '0');
+  document.getElementById('cd-horas').textContent = String(horas).padStart(2, '0');
+  document.getElementById('cd-min').textContent = String(min).padStart(2, '0');
+  document.getElementById('cd-seg').textContent = String(seg).padStart(2, '0');
+}
+
+updateCountdown();
+setInterval(updateCountdown, 1000);
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if (e.target === overlay) overlay.classList.remove('open');
+  });
+});
+</script>
+</body>
+</html>
